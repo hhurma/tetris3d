@@ -83,7 +83,119 @@
         <div id="game-over" class="game-over hidden">
             <h2>OYUN BİTTİ!</h2>
             <p>Skorunuz: <span id="final-score">0</span></p>
-            <button id="restart-btn" class="btn">Yeniden Başla</button>
+            <button id="restart-btn" class="btn">Yeniden Başla</button>        </div>
+        
+        <!-- Visual Settings Panel -->
+        <div class="visual-settings">
+            <h2>Görsel Ayarlar</h2>
+            
+            <div class="visual-settings-group">
+                <h3>Arka Plan</h3>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Renk:</span>
+                        <input type="color" id="background-color" value="#667eea">
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Gradyan İkinci Renk:</span>
+                        <input type="color" id="background-color-2" value="#764ba2">
+                    </label>
+                </div>
+            </div>
+              <div class="visual-settings-group">
+                <h3>Aydınlatma</h3>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Ortam Işığı:</span>
+                        <input type="range" id="ambient-light" min="0.2" max="2" step="0.1" value="1.2">
+                        <span id="ambient-light-value">120%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Ana Işık:</span>
+                        <input type="range" id="directional-light" min="0.5" max="3" step="0.1" value="2">
+                        <span id="directional-light-value">200%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Dolgu Işığı:</span>
+                        <input type="range" id="fill-light" min="0" max="1" step="0.05" value="0.3">
+                        <span id="fill-light-value">30%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Kenar Işığı:</span>
+                        <input type="range" id="rim-light" min="0" max="1" step="0.05" value="0.2">
+                        <span id="rim-light-value">20%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Parlaklık:</span>
+                        <input type="range" id="brightness" min="0.5" max="2" step="0.1" value="1">
+                        <span id="brightness-value">100%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Kontrast:</span>
+                        <input type="range" id="contrast" min="0.5" max="2" step="0.1" value="1">
+                        <span id="contrast-value">100%</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="visual-settings-group">
+                <h3>Efektler</h3>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="bloom-toggle">
+                        <span class="checkmark"></span>
+                        Bloom Efekti
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="vignette-toggle">
+                        <span class="checkmark"></span>
+                        Vinyetleme
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Bulanıklık:</span>
+                        <input type="range" id="blur" min="0" max="10" step="0.5" value="0">
+                        <span id="blur-value">0px</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="visual-settings-group">
+                <h3>Renk Ayarları</h3>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Doygunluk:</span>
+                        <input type="range" id="saturation" min="0" max="2" step="0.1" value="1">
+                        <span id="saturation-value">100%</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <span>Ton:</span>
+                        <input type="range" id="hue" min="0" max="360" step="1" value="0">
+                        <span id="hue-value">0°</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="visual-reset">
+                <button id="reset-visual-btn" class="btn">Varsayılan Ayarlar</button>
+            </div>
         </div>
         
         <!-- Compass -->
