@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Tetris</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="ui-overlay">
+        <div class="game-info">
+            <h1>3D TETRIS</h1>
+            <div class="score-panel">
+                <div class="score-item">
+                    <span class="label">Skor:</span>
+                    <span id="score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">Seviye:</span>
+                    <span id="level">1</span>
+                </div>                <div class="score-item">
+                    <span class="label">Satırlar:</span>
+                    <span id="lines">0</span>
+                </div>
+            </div>
+              <div class="game-settings">
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="auto-drop-toggle" checked>
+                        <span class="checkmark"></span>
+                        Otomatik Düşme
+                    </label>
+                </div>                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="shadow-toggle" checked>
+                        <span class="checkmark"></span>
+                        Gölge Projeksiyon
+                    </label>
+                </div>                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="real-shadow-toggle">
+                        <span class="checkmark"></span>
+                        Gerçek Gölgeler
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="snap-toggle" checked>
+                        <span class="checkmark"></span>
+                        Yüzeye Snap
+                    </label>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h3>Kontroller:</h3>                <div class="control-list">
+                    <div class="control-item">← → ↑ ↓: Hareket (Kamera açısına göre)</div>
+                    <div class="control-item">↓: Manuel Düşme (Otomatik kapalıysa)</div>
+                    <div class="control-item">Q/E: Yatay Döndür</div>
+                    <div class="control-item">A/D: X Ekseni Döndür</div>
+                    <div class="control-item">W/S: Z Ekseni Döndür</div>                    <div class="control-item">Space: Hızlı Düşür</div>
+                    <div class="control-item">P: Duraklat</div>                    <div class="control-item">Tab: En Yakın Yüzeye Snap</div>
+                    <div class="control-item">X: Yüzeye Snap Aç/Kapat</div>
+                    <div class="control-item">🖱️ Mouse: Kamera Kontrolü</div>
+                    <div class="control-item">🎮 Gamepad Desteklenir</div>
+                </div>
+            </div>
+            <div class="gamepad-info">
+                <h3>🎮 Gamepad:</h3>                <div class="control-list">
+                    <div class="control-item">Sol Stick/D-Pad: Hareket (Kamera açısına göre)</div>
+                    <div class="control-item">D-Pad Aşağı: Manuel Düşme (Otomatik kapalıysa)</div>
+                    <div class="control-item">A: Hızlı Düşür</div>
+                    <div class="control-item">B: Y Ekseni Döndür</div>
+                    <div class="control-item">X: X Ekseni Döndür</div>
+                    <div class="control-item">Y: Z Ekseni Döndür</div>                    <div class="control-item">LB: Duraklat</div>                    <div class="control-item">RB: En Yakın Yüzeye Snap</div>
+                    <div class="control-item">Select: Yüzeye Snap Aç/Kapat</div>
+                    <div class="control-item">Sağ Stick: Kamera</div>
+                    <div class="control-item">LT/RT: Zoom</div>
+                </div>
+            </div>
+        </div>
+        <div id="game-over" class="game-over hidden">
+            <h2>OYUN BİTTİ!</h2>
+            <p>Skorunuz: <span id="final-score">0</span></p>
+            <button id="restart-btn" class="btn">Yeniden Başla</button>
+        </div>
+        
+        <!-- Compass -->
+        <div class="compass" title="Kamera Yönü (Tab ile hizala)">
+            <div class="compass-needle" id="compass-needle"></div>
+            <div class="compass-directions">
+                <div class="compass-n">N</div>
+                <div class="compass-s">S</div>
+                <div class="compass-e">E</div>
+                <div class="compass-w">W</div>
+            </div>
+        </div>
+    </div>
+      <div id="game-container"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
