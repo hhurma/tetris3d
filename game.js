@@ -2963,8 +2963,7 @@ class Tetris3D {    constructor() {
           // Clear the blocks from board state IMMEDIATELY
         const totalCleared = this.clearBlocksByType(type, lines);
         console.log(`📊 Total blocks cleared from board: ${totalCleared}`);
-        
-        // Verify that the specific lines are actually cleared
+          // Verify that the specific lines are actually cleared
         console.log(`🔍 POST-CLEARING VERIFICATION:`);
         lines.forEach((line, index) => {
             if (line.type === 'horizontal-x') {
@@ -2979,6 +2978,33 @@ class Tetris3D {    constructor() {
                 console.log(`  Line ${index} at y=${line.y}, z=${line.z}: ${remainingBlocks} blocks remaining`, positions);
                 if (remainingBlocks > 0) {
                     console.error(`❌ ERROR: Line should be completely cleared but ${remainingBlocks} blocks remain!`);
+                    // Emergency fix - force clear any remaining blocks in this line
+                    for (let x = 0; x < this.BOARD_WIDTH; x++) {
+                        if (this.board[x] && this.board[x][line.y]) {
+                            this.board[x][line.y][line.z] = null;
+                            console.log(`  🚨 EMERGENCY CLEARING: Forced null at (${x}, ${line.y}, ${line.z})`);
+                        }
+                    }
+                }
+            } else if (line.type === 'vertical-z') {
+                let remainingBlocks = 0;
+                let positions = [];
+                for (let z = 0; z < this.BOARD_HEIGHT; z++) {
+                    if (this.board[line.x] && this.board[line.x][line.y] && this.board[line.x][line.y][z]) {
+                        remainingBlocks++;
+                        positions.push(`(${line.x},${z})`);
+                    }
+                }
+                console.log(`  Line ${index} at x=${line.x}, y=${line.y}: ${remainingBlocks} blocks remaining`, positions);
+                if (remainingBlocks > 0) {
+                    console.error(`❌ ERROR: Vertical line should be completely cleared but ${remainingBlocks} blocks remain!`);
+                    // Emergency fix for vertical lines
+                    for (let z = 0; z < this.BOARD_HEIGHT; z++) {
+                        if (this.board[line.x] && this.board[line.x][line.y]) {
+                            this.board[line.x][line.y][z] = null;
+                            console.log(`  🚨 EMERGENCY CLEARING: Forced null at (${line.x}, ${line.y}, ${z})`);
+                        }
+                    }
                 }
             }
         });
@@ -3015,14 +3041,26 @@ class Tetris3D {    constructor() {
         
         // CRITICAL: Reset clearing state BEFORE recreating visuals
         this.resetLineClearingState();
-        
-        // Force update visuals - this should reflect the cleared blocks
+          // Force update visuals - this should reflect the cleared blocks
         console.log(`🎨 Recreating visual representation after clearing...`);
+        
+        // Ensure the scene is properly updated before updating visuals
+        if (this.staticBlocks) {
+            console.log("🧹 Removing existing static blocks from scene");
+            // Remove old meshes from scene to avoid duplicates
+            this.scene.remove(this.staticBlocks);
+            this.staticBlocks = null;
+        }
+        
+        // Update UI first, then recreate all static blocks
         this.updateUI();
         this.createStaticBlocks();
         
         // Final verification after visual recreation
         this.debugBoardState("AFTER_VISUAL_RECREATION");
+        
+        // Verify no orphan blocks remain
+        console.log("🔍 Running additional verification of visual state...");
         
         console.log(`✅ Line clearing complete for ${type}. Spawning new piece...`);
         
@@ -3165,13 +3203,32 @@ class Tetris3D {    constructor() {
             switch (line.type) {                case 'horizontal-x':
                     // Clear entire horizontal line (X-axis)
                     console.log(`🎯 Clearing horizontal line at y=${line.y}, z=${line.z}`);
+                    let lineBlockCount = 0;
+                    
+                    // First pass: Count how many blocks should be in this line
                     for (let x = 0; x < this.BOARD_WIDTH; x++) {
                         if (this.board[x] && this.board[x][line.y] && this.board[x][line.y][line.z]) {
+                            lineBlockCount++;
+                        }
+                    }
+                    
+                    console.log(`  📊 Expected to clear ${lineBlockCount} blocks in this line`);
+                    
+                    // Second pass: Make sure ALL positions in the line are nulled
+                    for (let x = 0; x < this.BOARD_WIDTH; x++) {
+                        // Initialize board structure if needed
+                        if (!this.board[x]) this.board[x] = [];
+                        if (!this.board[x][line.y]) this.board[x][line.y] = [];
+                        
+                        // Force clear the position regardless of current state
+                        if (this.board[x][line.y][line.z]) {
                             console.log(`  🗑️ Clearing block at (${x}, ${line.y}, ${line.z}) - Block exists: YES`);
                             this.board[x][line.y][line.z] = null;
                             totalBlocksCleared++;
                         } else {
-                            console.log(`  ⚠️ Block at (${x}, ${line.y}, ${line.z}) - Block exists: NO`);
+                            console.log(`  🗑️ Clearing position at (${x}, ${line.y}, ${line.z}) - No block present`);
+                            // Still set to null to ensure consistency
+                            this.board[x][line.y][line.z] = null;
                         }
                     }
                     console.log(`  ✅ Cleared ${totalBlocksCleared} blocks from horizontal line at y=${line.y}, z=${line.z}`);
@@ -3179,13 +3236,34 @@ class Tetris3D {    constructor() {
                     
                 case 'vertical-z':
                     // Clear entire vertical line (Z-axis)
+                    console.log(`🎯 Clearing vertical line at x=${line.x}, y=${line.y}`);
+                    let vertLineBlockCount = 0;
+                    
+                    // First pass: Count existing blocks
                     for (let z = 0; z < this.BOARD_HEIGHT; z++) {
                         if (this.board[line.x] && this.board[line.x][line.y] && this.board[line.x][line.y][z]) {
-                            console.log(`  🗑️ Clearing block at (${line.x}, ${line.y}, ${z})`);
-                            this.board[line.x][line.y][z] = null;
-                            totalBlocksCleared++;
+                            vertLineBlockCount++;
                         }
                     }
+                    
+                    console.log(`  📊 Expected to clear ${vertLineBlockCount} blocks in this vertical line`);
+                    
+                    // Second pass: Clear all positions
+                    for (let z = 0; z < this.BOARD_HEIGHT; z++) {
+                        // Initialize board structure if needed
+                        if (!this.board[line.x]) this.board[line.x] = [];
+                        if (!this.board[line.x][line.y]) this.board[line.x][line.y] = [];
+                        
+                        if (this.board[line.x][line.y][z]) {
+                            console.log(`  🗑️ Clearing block at (${line.x}, ${line.y}, ${z}) - Block exists: YES`);
+                            this.board[line.x][line.y][z] = null;
+                            totalBlocksCleared++;
+                        } else {
+                            console.log(`  🗑️ Clearing position at (${line.x}, ${line.y}, ${z}) - No block present`);
+                            this.board[line.x][line.y][z] = null;
+                        }
+                    }
+                    console.log(`  ✅ Cleared ${totalBlocksCleared} blocks from vertical line at x=${line.x}, y=${line.y}`);
                     break;
                     
                 case '7x2-xz':
